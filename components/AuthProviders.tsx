@@ -1,36 +1,44 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+"use client"
+
 import { getProviders, signIn } from 'next-auth/react';
-import { ProviderType, ProvidersType } from '@/types/providers.type';
+import React, { useEffect, useState } from 'react'
+
+import Button from './Button';
+
+type Provider = {
+    id: string;
+    name: string;
+    type: string;
+    signinUrl: string;
+    callbackUrl: string;
+    signinUrlParams?: Record<string, string> | undefined;
+  };
+  
+  type Providers = Record<string, Provider>;
+
 
 const AuthProviders = () => {
-  const [providers, setProviders] = useState<ProvidersType | null>(null);
+    const [providers, setProviders] = useState<Providers | null>(null);
 
-  const isProviers = providers && Object.values(providers).length > 0;
+    useEffect(() => {
+        const fetchProviders = async () => {
+            const res = await getProviders();
+    
+            setProviders(res);
+        }
 
-  useEffect(() => {
-    const fetchProviders = async () => {
-      const providers = await getProviders();
-      console.log(providers);
-      setProviders(providers);
-    };
+        fetchProviders();
+    }, []);
 
-    fetchProviders();
-  });
+    if (providers) {
+        return (
+            <div>
+                {Object.values(providers).map((provider: Provider, i) => (
+                    <Button key={i} title='Sign In' handleClick={() => signIn(provider?.id)} />
+                ))}
+            </div>
+        )
+    }
+}
 
-  return (
-    isProviers && (
-      <div>
-        {Object.values(providers).map(
-          (provider: ProviderType, index: number) => (
-            <button key={index} onClick={() => signIn(provider.id)}>
-              {provider.id}
-            </button>
-          )
-        )}
-      </div>
-    )
-  );
-};
-
-export default AuthProviders;
+export default AuthProviders

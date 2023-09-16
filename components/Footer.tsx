@@ -1,14 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
-import { footerLinks } from '@/constants';
 
-type ColumnPropsType = {
+import { footerLinks } from '@/constant';
+
+type ColumnProps = {
   title: string;
-  links: string[];
+  links: Array<string>;
 };
 
-const FooterColumn = ({ title, links }: ColumnPropsType) => (
+const FooterColumn = ({ title, links }: ColumnProps) => (
   <div className="footer_column">
     <h4 className="font-semibold">{title}</h4>
     <ul className="flex flex-col gap-2 font-normal">
